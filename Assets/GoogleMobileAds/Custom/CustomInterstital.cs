@@ -4,7 +4,7 @@ using GoogleMobileAds.Api;
 
 namespace GoogleMobileAds.Custom
 {
-    internal class CustomInterstital
+    internal class CustomInterstital:CustomAdBase
     {
 
         // google ca-app-pub-3940256099942544/4411468910
@@ -17,9 +17,6 @@ namespace GoogleMobileAds.Custom
 
         private static InterstitialAd interstitialAd = null;
 
-        private Action onAdOpening;
-        private Action onAdClosed;
-        private Action onAdLeavingApplication;
 
         private static CustomInterstital _instance = null;
 
@@ -44,15 +41,8 @@ namespace GoogleMobileAds.Custom
             interstitialAd.OnAdLeavingApplication += HandleOnAdLeavingApplication;
             interstitialAd.OnAdFailedToLoad += HandleOnAdFailedToLoad;
 
-            this.RequestInterstitial();
+            RequestAd();
 
-        }
-
-        private void RequestInterstitial(){
-            AdRequest request = new AdRequest.Builder()
-                                            .AddTestDevice("ED7472ADCC079DC963B661595DCB4EEF")
-                                             .Build();
-            interstitialAd.LoadAd(request);
         }
 
         public void Show(){
@@ -63,49 +53,34 @@ namespace GoogleMobileAds.Custom
             }
         }
 
-        public bool GetLoadedStatus()
-        {
-            return interstitialAd != null && interstitialAd.IsLoaded();
-        }
-
         public void DestoryInterstitialAd(){
             if(interstitialAd != null){
                 interstitialAd.Destroy();
             }
         }
 
-        public void HandleOnAdLoaded(object sender, EventArgs args)
-        {
-            MonoBehaviour.print("HandleAdLoaded event received");
-        }
-
         public void HandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
         {
             Debug.LogError("Interstitial load Ad failed. "+args.Message);
-            RequestInterstitial();
+            RequestAd();
         }
 
-        public void HandleOnAdOpened(object sender, EventArgs args)
-        {
-            if(this.onAdOpening != null){
-                this.onAdOpening();
-            }
-        }
 
-        public void HandleOnAdClosed(object sender, EventArgs args)
+        public override void HandleOnAdClosed(object sender, EventArgs args)
         {
-            if(this.onAdClosed !=null){
-                this.onAdClosed();
-            }
+            base.HandleOnAdClosed(sender,args);
             interstitialAd.Destroy();
-            Init(this.onAdOpening, this.onAdClosed, this.onAdLeavingApplication);
+            Init(onAdOpening, onAdClosed, onAdLeavingApplication);
         }
 
-        public void HandleOnAdLeavingApplication(object sender, EventArgs args)
+        protected override void RequestAd()
         {
-            if(this.onAdLeavingApplication != null){
-                this.onAdLeavingApplication();
-            }
+            interstitialAd.LoadAd(GetAdRequest());
+        }
+
+        public override bool IsLoaded()
+        {
+            return interstitialAd != null && interstitialAd.IsLoaded();
         }
     }
 }

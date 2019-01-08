@@ -4,7 +4,7 @@ using GoogleMobileAds.Api;
 
 namespace GoogleMobileAds.Custom
 {
-    internal class CustomBannerView
+    internal class CustomBannerView:CustomAdBase
     {
         // google ca-app-pub-3940256099942544/2934735716
         // ca-app-pub-7731812981209546/4507907257
@@ -15,10 +15,6 @@ namespace GoogleMobileAds.Custom
 #endif
 
         private BannerView bannerAd = null;
-
-        private Action onAdOpening;
-        private Action onAdClosed;
-        private Action onAdLeavingApplication;
 
         private AdSize bannerSize;
         private AdPosition bannerPosition;
@@ -44,14 +40,6 @@ namespace GoogleMobileAds.Custom
             this.bannerPosition = position;
         }
 
-        private void RequestAd(){
-            bannerAd = new BannerView(adUnitId, this.bannerSize, this.bannerPosition);
-            bannerAd.OnAdFailedToLoad += BannerAd_OnAdFailedToLoad;
-            AdRequest request = new AdRequest.Builder().AddTestDevice("ED7472ADCC079DC963B661595DCB4EEF")
-                                                 .Build();
-            bannerAd.LoadAd(request);
-        }
-
         void BannerAd_OnAdFailedToLoad(object sender, AdFailedToLoadEventArgs e)
         {
             Debug.LogError("BannerView load Ad Failed. " + e.Message);
@@ -74,38 +62,22 @@ namespace GoogleMobileAds.Custom
             bannerAd = null;
         }
 
-        public void HandleOnAdLoaded(object sender, EventArgs args)
-        {
-            MonoBehaviour.print("HandleAdLoaded event received");
-        }
 
         public void HandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
         {
             RequestAd();
         }
 
-        public void HandleOnAdOpened(object sender, EventArgs args)
+        protected override void RequestAd()
         {
-            if (this.onAdOpening != null)
-            {
-                this.onAdOpening();
-            }
+            bannerAd = new BannerView(adUnitId, this.bannerSize, this.bannerPosition);
+            bannerAd.OnAdFailedToLoad += BannerAd_OnAdFailedToLoad;
+            bannerAd.LoadAd(GetAdRequest());
         }
 
-        public void HandleOnAdClosed(object sender, EventArgs args)
+        public override bool IsLoaded()
         {
-            if (this.onAdClosed != null)
-            {
-                this.onAdClosed();
-            }
-        }
-
-        public void HandleOnAdLeavingApplication(object sender, EventArgs args)
-        {
-            if (this.onAdLeavingApplication != null)
-            {
-                this.onAdLeavingApplication();
-            }
+            return true;
         }
     }
 }

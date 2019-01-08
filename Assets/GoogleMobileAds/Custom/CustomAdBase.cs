@@ -1,14 +1,16 @@
 ﻿using System;
-namespace Application
+using GoogleMobileAds.Api;
+namespace GoogleMobileAds.Custom
 {
     internal abstract class CustomAdBase
     {
 
         protected Action onLoaded;
-        protected Action onOpening;
-        protected Action onClosed;
+        protected Action onAdOpening;
+        protected Action onAdClosed;
+        protected Action onAdLeavingApplication;
 
-        public void HandleOnAdLoaded(object sender, EventArgs args)
+        public virtual void HandleOnAdLoaded(object sender, EventArgs args)
         {
             if(onLoaded != null)
             {
@@ -16,21 +18,39 @@ namespace Application
             }
         }
 
-        public void HandleOnAdOpening(object sender,EventArgs args)
+        public virtual void HandleOnAdOpened(object sender,EventArgs args)
         {
-            if(onOpening != null)
+            if(onAdOpening != null)
             {
-                onOpening();
+                onAdOpening();
             }
         }
 
-        public void HandleOnCloseed(object sender, EventArgs args)
+        public virtual void HandleOnAdClosed(object sender, EventArgs args)
         {
-            if(onClosed != null)
+            if(onAdClosed != null)
             {
-                onClosed();
+                onAdClosed();
             }
         }
+
+        public virtual void HandleOnAdLeavingApplication(object sender, EventArgs args)
+        {
+            if (onAdLeavingApplication != null)
+            {
+                onAdLeavingApplication();
+            }
+        }
+
+        public AdRequest GetAdRequest()
+        {
+            AdRequest adRequest = new AdRequest.Builder()
+                                                .AddTestDevice("ED7472ADCC079DC963B661595DCB4EEF").AddTestDevice("44ec14876f1d407677689663b6a5ca27")
+                                                .Build();
+            return adRequest;
+        }
+
+        protected abstract void RequestAd();
 
         public abstract bool IsLoaded();
     }

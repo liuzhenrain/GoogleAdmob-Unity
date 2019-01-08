@@ -28,31 +28,31 @@ public class CustomAdTest : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         if(banner!=null){
-            CustomManager.Instance.InitAdmob(AdSize.Banner, AdPosition.Bottom);
+            CustomAdManager.Instance.InitAdmob(AdSize.Banner, AdPosition.Bottom);
             openBanner = banner.transform.Find("Open").GetComponent<Button>();
             closeBanner = banner.transform.Find("Close").GetComponent<Button>();
             openBanner.onClick.AddListener(() => {
-                    CustomManager.Instance.ShowAd(AdmobType.BannerView);
+                    CustomAdManager.Instance.ShowAd(AdmobType.BannerView);
             });
             closeBanner.onClick.AddListener(() =>
             {
-                CustomManager.Instance.CloseAd(AdmobType.BannerView);
+                CustomAdManager.Instance.CloseAd(AdmobType.BannerView);
             });
         }
         if (interstitial != null)
         {
-            CustomManager.Instance.InitAdmob(AdmobType.Interstitial, () => { Debug.Log("Interstitial Opening"); }, ()=> { Debug.Log("InterstitialAd Closeed"); }, null);
+            CustomAdManager.Instance.InitAdmob(AdmobType.Interstitial, () => { Debug.Log("Interstitial Opening"); }, ()=> { Debug.Log("InterstitialAd Closeed"); }, null);
             openInterstitial = interstitial.transform.Find("Open").GetComponent<Button>();
             closeInterstitial = interstitial.transform.Find("Close").GetComponent<Button>();
             openInterstitial.onClick.AddListener(() => {
-                if (CustomManager.Instance.GetLoadedStatus(AdmobType.Interstitial))
-                    CustomManager.Instance.ShowAd(AdmobType.Interstitial);
+                if (CustomAdManager.Instance.GetLoadedStatus(AdmobType.Interstitial))
+                    CustomAdManager.Instance.ShowAd(AdmobType.Interstitial);
                 else
                     Debug.Log("插屏广告还未加载完成");
             });
             closeInterstitial.onClick.AddListener(() =>
             {
-                CustomManager.Instance.CloseAd(AdmobType.Interstitial);
+                CustomAdManager.Instance.CloseAd(AdmobType.Interstitial);
             });
         }
         if (reward != null)
@@ -60,8 +60,8 @@ public class CustomAdTest : MonoBehaviour {
             openReward = reward.transform.Find("Open").GetComponent<Button>();
             closeReward = reward.transform.Find("Close").GetComponent<Button>();
             openReward.onClick.AddListener(() => {
-                if (CustomManager.Instance.GetLoadedStatus(AdmobType.RewardAd))
-                    CustomManager.Instance.ShowAd(AdmobType.RewardAd,(double amount,string type)=>{
+                if (CustomAdManager.Instance.GetLoadedStatus(AdmobType.RewardAd))
+                    CustomAdManager.Instance.ShowAd(AdmobType.RewardAd,(double amount,string type)=>{
                         rewardTips.text += string.Format("Ammount:{0},type:{1}\n", amount, type);
                 });
                 else
@@ -69,10 +69,10 @@ public class CustomAdTest : MonoBehaviour {
             });
             closeReward.onClick.AddListener(() =>
             {
-                CustomManager.Instance.CloseAd(AdmobType.RewardAd);
+                CustomAdManager.Instance.CloseAd(AdmobType.RewardAd);
             });
             rewardTips = reward.transform.Find("RewardTip").GetComponent<Text>();
-            CustomManager.Instance.InitAdmob(AdmobType.RewardAd, () => { Debug.Log("RewardAd Opening"); }, () => { Debug.Log("RewardAd Closeed"); }, null);
+            CustomAdManager.Instance.InitAdmob(AdmobType.RewardAd, () => { Debug.Log("RewardAd Opening"); }, () => { Debug.Log("RewardAd Closeed"); }, null);
         }
 
     }

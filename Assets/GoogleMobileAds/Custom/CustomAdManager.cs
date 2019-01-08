@@ -12,7 +12,7 @@ namespace GoogleMobileAds.Custom
         RewardAd = 3
     }
 
-    public class CustomManager
+    public class CustomAdManager
     {
         // Google ca-app-pub-3940256099942544~1458002511
         // mine ca-app-pub-7731812981209546~4693053165
@@ -24,15 +24,15 @@ namespace GoogleMobileAds.Custom
         private static string APPID = "unexpected_platform";
 #endif
         static bool hasInit = false;
-        private static CustomManager _instance = null;
+        private static CustomAdManager _instance = null;
 
-        public static CustomManager Instance
+        public static CustomAdManager Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new CustomManager();
+                    _instance = new CustomAdManager();
                 }
                 return _instance;
             }
@@ -93,10 +93,10 @@ namespace GoogleMobileAds.Custom
             bool result = false;
             switch(type){
                 case AdmobType.Interstitial:
-                    result = CustomInterstital.Instance.GetLoadedStatus();
+                    result = CustomInterstital.Instance.IsLoaded();
                     break;
                 case AdmobType.RewardAd:
-                    result = CustomRewardAd.Instance.GetLoadedStatus();
+                    result = CustomRewardAd.Instance.IsLoaded();
                     break;
             }
             return result;
