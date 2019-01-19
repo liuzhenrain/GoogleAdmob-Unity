@@ -47,13 +47,7 @@ namespace GoogleMobileAds.Custom
             rewardAd.OnAdFailedToLoad += HandleOnAdFailedToLoad;
             rewardAd.OnAdRewarded += HandleRewardBasedVideoRewarded;
 
-            RequestRewardBasedVideo();
-        }
-
-        private void RequestRewardBasedVideo()
-        {
-            // Load the rewarded video ad with the request.
-            rewardAd.LoadAd(GetAdRequest(), adUnitId);
+            RequestAd();
         }
 
         public void Show(Action<double, string> rewardCallBack)
@@ -90,6 +84,12 @@ namespace GoogleMobileAds.Custom
             if(this.onReward !=null){
                 this.onReward(amount,type);
             }
+        }
+
+        public override void HandleOnAdClosed(object sender, EventArgs args)
+        {
+            base.HandleOnAdClosed(sender, args);
+            RequestAd();
         }
 
         public override bool IsLoaded()
